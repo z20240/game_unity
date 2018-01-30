@@ -1,0 +1,13 @@
+{
+"companyName": "DefaultCompany",
+"productName": "cardgame",
+"dataUrl": "web_testing.data.unityweb",
+"asmCodeUrl": "web_testing.asm.code.unityweb",
+"asmMemoryUrl": "web_testing.asm.memory.unityweb",
+"asmFrameworkUrl": "web_testing.asm.framework.unityweb",
+"TOTAL_MEMORY": 268435456,
+"graphicsAPI": ["WebGL 2.0", "WebGL 1.0"],
+"webglContextAttributes": {"preserveDrawingBuffer": false},
+"splashScreenStyle": "Dark",
+"backgroundColor": "#231F20"
+}
