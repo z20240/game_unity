@@ -59,6 +59,10 @@ public class fb_tool : MonoBehaviour {
                 }
 
                 // 發送此用戶的機碼
+                string uniDeviceID = SystemInfo.deviceUniqueIdentifier;
+                Debug.Log ("uniDeviceID " + uniDeviceID);
+
+
             } else {
                 Debug.Log ("User cancelled login");
             }
