@@ -2,9 +2,15 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.Networking;
+using Facebook.Unity;
+using UnityEngine.UI;
 
 
 public class login : MonoBehaviour {
+    void Awake () {
+
+    }
 
 	// Use this for initialization
 	void Start () {
@@ -16,31 +22,27 @@ public class login : MonoBehaviour {
 
 	}
 
-    public void save() {
-        //填寫jplayerState格式的資料..
-        model_user myPlayer = new model_user();
-        myPlayer.Name = "testplayer1";
-        myPlayer.Level = 1;
+    /*
+     * 取得 login 相關的資料
 
-        //將myPlayer轉換成json格式的字串
-        string saveString = JsonUtility.ToJson(myPlayer);
+     */
+    public IEnumerator GetLocalAccount() {
+        if (User.getInstance().GetLocalUserData() != null) {
+            // show lobby panel
+            var host = "localhost";
+            var port = 3000;
 
-        //將字串saveString存到硬碟中
-        StreamWriter file = new StreamWriter(System.IO.Path.Combine(Application.streamingAssetsPath, "myPlayer"));
-        file.Write(saveString);
-        file.Close();
-    }
+            var request = UnityWebRequest.Get(host + port);
+            yield return request.Send();
 
-    public void load() {
-        //讀取json檔案並轉存成文字格式
-        StreamReader file = new StreamReader(System.IO.Path.Combine(Application.streamingAssetsPath, "myPlayer"));
-        string loadJson = file.ReadToEnd();
-        file.Close();
+            if (request.isError) {
+                Debug.LogError("request user data error");
+                yield break;
+            }
 
-        //新增一個物件類型為playerState的變數 loadData
-        model_user loadData = new model_user();
-
-        //使用JsonUtillty的FromJson方法將存文字轉成Json
-        loadData = JsonUtility.FromJson<model_user>(loadJson);
+        } else {
+            // show login choose panel
+            yield break;
+        }
     }
 }

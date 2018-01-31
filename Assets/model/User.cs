@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class model_user {
+public class User {
+
+    private static User instance;
     private int uid;
     private int ctime;
     private int user_id;
@@ -15,7 +17,15 @@ public class model_user {
     private int vip;
     private string mugshot_customized;
     private string mugshot_url;
-    private int game_rol;
+    private int game_role;
+
+    private User(){ /* constructor */ }
+    public static User getInstance() {
+        if(instance == null){
+            instance = new User();
+        }
+        return instance;
+    }
     public int Uid {
         get{ return uid; }
     }
@@ -63,8 +73,21 @@ public class model_user {
         get { return mugshot_url; }
         set { mugshot_url = value; }
     }
-    public int Game_rol {
-        get { return game_rol; }
-        set { game_rol = value; }
+    public int Game_role {
+        get { return game_role; }
+        set { game_role = value; }
+    }
+
+    public User GetLocalUserData() {
+        object obj_user_data = LocalFile.LoadLocalFile("user");
+        if (obj_user_data == null) {
+            return null;
+        } else {
+            instance = (User)obj_user_data;
+            return instance;
+        }
+    }
+    public void SetLocalUserData() {
+        LocalFile.SaveLocalFile("user", instance);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Networking;
 using Facebook.Unity;
 using UnityEngine;
 using UnityEngine.UI;
@@ -52,7 +53,7 @@ public class fb_tool : MonoBehaviour {
                 // AccessToken class will have session details
                 var aToken = Facebook.Unity.AccessToken.CurrentAccessToken;
                 // Print current access token's User ID
-                Debug.Log ("token " + aToken.UserId);
+                Debug.Log ("facebook " + aToken.UserId);
                 // Print current access token's granted permissions
                 foreach (string perm in aToken.Permissions) {
                     Debug.Log (perm);
@@ -61,7 +62,6 @@ public class fb_tool : MonoBehaviour {
                 // 發送此用戶的機碼
                 string uniDeviceID = SystemInfo.deviceUniqueIdentifier;
                 Debug.Log ("uniDeviceID " + uniDeviceID);
-
 
             } else {
                 Debug.Log ("User cancelled login");
