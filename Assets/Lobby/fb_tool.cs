@@ -63,6 +63,8 @@ public class fb_tool : MonoBehaviour {
                 string uniDeviceID = SystemInfo.deviceUniqueIdentifier;
                 Debug.Log ("uniDeviceID " + uniDeviceID);
 
+                User.getInstance().SetLocalUserData();
+
             } else {
                 Debug.Log ("User cancelled login");
             }
