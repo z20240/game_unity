@@ -7,7 +7,7 @@ public class User {
     private static User instance;
     private int uid;
     private int ctime;
-    private int user_id;
+    private string user_id;
     private string pass_word;
     private string name;
     private int job;
@@ -18,6 +18,7 @@ public class User {
     private string mugshot_customized;
     private string mugshot_url;
     private int game_role;
+    private string fb_userid;
 
     private User(){ /* constructor */ }
     public static User getInstance() {
@@ -33,7 +34,7 @@ public class User {
         get { return ctime; }
         set { ctime = value; }
     }
-    public int User_id {
+    public string User_id {
         get { return user_id; }
         set { user_id = value; }
     }
@@ -78,16 +79,41 @@ public class User {
         set { game_role = value; }
     }
 
+    public string Fb_userid {
+        get { return fb_userid; }
+        set { fb_userid = value; }
+    }
     public User GetLocalUserData() {
         object obj_user_data = LocalFile.LoadLocalFile("user");
+        Debug.Log("[GetLocalUserData] obj_user_data:" + obj_user_data.ToString());
         if (obj_user_data == null) {
             return null;
         } else {
             instance = (User)obj_user_data;
+
+            Debug.Log("[GetLocalUserData] instance:" + instance.ToString());
             return instance;
         }
     }
     public void SetLocalUserData() {
         LocalFile.SaveLocalFile("user", instance);
+    }
+
+    public void Clone(object obj) {
+        var dic_Obj = (Dictionary<string, object>)obj;
+        uid = (int)dic_Obj["uid"];
+        ctime = (int)dic_Obj["ctime"];
+        user_id = (string)dic_Obj["user_id"];
+        pass_word = (string)dic_Obj["pass_word"];
+        name = (string)dic_Obj["name"];
+        job = (int)dic_Obj["job"];
+        last_play = (int)dic_Obj["last_play"];
+        level = (int)dic_Obj["level"];
+        exp = (int)dic_Obj["exp"];
+        vip = (int)dic_Obj["vip"];
+        mugshot_customized = (string)dic_Obj["mugshot_customized"];
+        mugshot_url = (string)dic_Obj["mugshot_url"];
+        game_role = (int)dic_Obj["game_role"];
+        fb_userid = (string)dic_Obj["fb_userid"];
     }
 }

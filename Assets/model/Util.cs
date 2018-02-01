@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 class Util {
-
     private static Util instance;
     private Util(){ /* constructor */ }
     public static Util getInstance() {
@@ -21,6 +20,15 @@ class Util {
             }
 
             return new System.String(stringChars);
+        }
+    }
+
+    public string LobbyAddr {
+        get {
+            var ip = "localhost";
+            var port = 3000;
+
+            return (ip + ":" + port);
         }
     }
 }

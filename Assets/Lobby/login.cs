@@ -13,6 +13,8 @@ public class login : MonoBehaviour {
         StartCoroutine(CreateNewAccount());
     }
 
+
+
     public void FacebookLogin() {
         // 設定權限
         var permissions = new List<string> () { "public_profile", "email", "user_friends" };
@@ -28,12 +30,9 @@ public class login : MonoBehaviour {
                     Debug.Log (perm);
                 }
 
-                // 發送此用戶的機碼
-                string uniDeviceID = SystemInfo.deviceUniqueIdentifier;
-                Debug.Log ("uniDeviceID " + uniDeviceID);
+                StartCoroutine(GetFBUserAccount(aToken.UserId));
 
-                User.getInstance().SetLocalUserData();
-
+                // 進入遊戲
             } else {
                 Debug.Log ("User cancelled login");
             }
@@ -47,44 +46,84 @@ public class login : MonoBehaviour {
         // 如果有資料的話
         if (User.getInstance().GetLocalUserData() != null) {
             // show lobby panel
-            var host = "localhost";
-            var port = 3000;
+            string url = Util.getInstance().LobbyAddr + "/users/user?user_id=" + User.getInstance().User_id + "&fb_userid=" + User.getInstance().Fb_userid;
 
-            var request = UnityWebRequest.Get(host + port + "/users");
+            var request = UnityWebRequest.Get(url);
             yield return request.Send();
 
             if (request.isNetworkError) {
                 Debug.LogError("request user data error");
                 yield break;
             }
-
         } else {
             // show login choose panel
             yield break;
         }
     }
 
-    // 快速登入
+    IEnumerator GetFBUserAccount(string fb_userid) {
+        string url = Util.getInstance().LobbyAddr + "/users/facebookUser/" + fb_userid;
+
+        Debug.Log("url : " + url);
+
+        using (UnityWebRequest www = UnityWebRequest.Get(url)) {
+            yield return www.Send();
+
+            if (www.isNetworkError || www.isHttpError) {
+                Debug.Log(www.error);
+                yield break;
+            } else {
+                if (www.isDone) {
+                    string jsonResult = System.Text.Encoding.UTF8.GetString(www.downloadHandler.data);
+                    object objResult = JsonUtility.FromJson<object>(jsonResult);
+                    var dictiionaryResult = (Dictionary<string, object>)objResult;
+
+                    if (!(bool)dictiionaryResult["result"]) {
+                        Debug.LogError("== result Error! ==");
+                        yield break;
+                    }
+
+                    User.getInstance().Clone(dictiionaryResult["data"]);
+                    User.getInstance().SetLocalUserData();
+                    Debug.Log(jsonResult);
+                    Debug.Log("[facebookUserAccount] User instance: " + User.getInstance().ToString());
+                    Debug.Log("dictiionaryResult : " + dictiionaryResult.ToString());
+                }
+                Debug.Log("Form upload complete!");
+            }
+        }
+    }
+
+    // 無帳號 快速登入
     IEnumerator CreateNewAccount() {
-        string user_id = Util.getInstance().RandomAccount;
-        var host = "localhost";
-        var port = 3000;
-        string url = host + ":" + port + "/users/autoCreate";
+        string url = Util.getInstance().LobbyAddr + "/users/autoCreate";
 
         Debug.Log("url : " + url);
 
         WWWForm form = new WWWForm();
-        form.AddField("user_id", user_id);
 
         using (UnityWebRequest www = UnityWebRequest.Post(url, form)) {
             yield return www.Send();
 
             if (www.isNetworkError || www.isHttpError) {
                 Debug.Log(www.error);
+                yield break;
             } else {
                 if (www.isDone) {
                     string jsonResult = System.Text.Encoding.UTF8.GetString(www.downloadHandler.data);
+                    object objResult = JsonUtility.FromJson<object>(jsonResult);
+                    var dictiionaryResult = (Dictionary<string, object>)objResult;
+
+                    if (!(bool)dictiionaryResult["result"]) {
+                        Debug.LogError("== result Error! ==");
+                        yield break;
+                    }
+
+                    User.getInstance().Clone(dictiionaryResult["data"]);
+                    User.getInstance().SetLocalUserData();
                     Debug.Log(jsonResult);
+                    Debug.Log("[CreateNewAccount] User instance: " + User.getInstance().ToString());
+                    Debug.Log("dictiionaryResult : " + dictiionaryResult.ToString());
                 }
                 Debug.Log("Form upload complete!");
             }
