@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using Facebook.Unity;
 using UnityEngine.UI;
-
+using System;
 
 public class login : MonoBehaviour {
 
@@ -111,8 +111,12 @@ public class login : MonoBehaviour {
             } else {
                 if (www.isDone) {
                     string jsonResult = System.Text.Encoding.UTF8.GetString(www.downloadHandler.data);
-                    object objResult = JsonUtility.FromJson<object>(jsonResult);
-                    var dictiionaryResult = (Dictionary<string, object>)objResult;
+                    var objResult = JsonUtility.FromJson<object>(jsonResult);
+                    Debug.Log(jsonResult);
+                    var dictiionaryResult = ObjectToDictionaryHelper.ToDictionary(objResult);
+
+                    List<string> keyList = new List<string>(dictiionaryResult.Keys);
+                    Debug.Log("key list ;" +   String.Join(", ", keyList.ToArray()));
 
                     if (!(bool)dictiionaryResult["result"]) {
                         Debug.LogError("== result Error! ==");
