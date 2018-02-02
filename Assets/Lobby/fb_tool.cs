@@ -49,25 +49,24 @@ public class fb_tool : MonoBehaviour {
         var permissions = new List<string> () { "public_profile", "email", "user_friends" };
         FB.LogInWithReadPermissions (permissions, (result) => {
             print (message: "check login success or not: " + result);
-            if (FB.IsLoggedIn) {
-                // AccessToken class will have session details
-                var aToken = Facebook.Unity.AccessToken.CurrentAccessToken;
-                // Print current access token's User ID
-                Debug.Log ("facebook " + aToken.UserId);
-                // Print current access token's granted permissions
-                foreach (string perm in aToken.Permissions) {
-                    Debug.Log (perm);
-                }
-
-                // 發送此用戶的機碼
-                string uniDeviceID = SystemInfo.deviceUniqueIdentifier;
-                Debug.Log ("uniDeviceID " + uniDeviceID);
-
-                User.getInstance().SetLocalUserData();
-
-            } else {
+            if (!FB.IsLoggedIn) {
                 Debug.Log ("User cancelled login");
+                return;
             }
+            // AccessToken class will have session details
+            var aToken = Facebook.Unity.AccessToken.CurrentAccessToken;
+            // Print current access token's User ID
+            Debug.Log ("facebook " + aToken.UserId);
+            // Print current access token's granted permissions
+            foreach (string perm in aToken.Permissions) {
+                Debug.Log (perm);
+            }
+
+            // 發送此用戶的機碼
+            string uniDeviceID = SystemInfo.deviceUniqueIdentifier;
+            Debug.Log ("uniDeviceID " + uniDeviceID);
+
+            User.getInstance().SetLocalUserData();
         });
     }
 

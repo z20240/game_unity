@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using LitJson;
 
 
 public class LocalFile {
@@ -10,17 +11,18 @@ public class LocalFile {
         //填寫jplayerState格式的資料..
 
         //將myPlayer轉換成json格式的字串
-        string saveString = JsonUtility.ToJson(obj);
+        string saveString = JsonMapper.ToJson(obj);
 
         //將字串saveString存到硬碟中
-        StreamWriter file = new StreamWriter(System.IO.Path.Combine(Application.streamingAssetsPath, fileName));
+        Debug.Log("path : " + Application.persistentDataPath);
+        StreamWriter file = new StreamWriter(System.IO.Path.Combine(Application.persistentDataPath, fileName));
         file.Write(saveString);
         file.Close();
     }
 
     public static object LoadLocalFile(string fileName) {
         //讀取json檔案並轉存成文字格式
-        StreamReader file = new StreamReader(System.IO.Path.Combine(Application.streamingAssetsPath, fileName));
+        StreamReader file = new StreamReader(System.IO.Path.Combine(Application.persistentDataPath, fileName));
         string loadJson = file.ReadToEnd();
         file.Close();
 
