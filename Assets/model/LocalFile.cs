@@ -20,17 +20,20 @@ public class LocalFile {
         file.Close();
     }
 
-    public static object LoadLocalFile(string fileName) {
+    public static JsonData LoadLocalFile(string fileName) {
+        if (!File.Exists(System.IO.Path.Combine(Application.persistentDataPath, fileName))) {
+            return null;
+        }
+        Debug.Log("path : " + Application.persistentDataPath);
+
         //讀取json檔案並轉存成文字格式
         StreamReader file = new StreamReader(System.IO.Path.Combine(Application.persistentDataPath, fileName));
         string loadJson = file.ReadToEnd();
         file.Close();
 
         //新增一個物件類型為playerState的變數 loadData
-        object loadData = new object();
+        JsonData loadData = JsonMapper.ToObject(loadJson);
 
-        //使用JsonUtillty的FromJson方法將存文字轉成Json
-        loadData = JsonUtility.FromJson<object>(loadJson);
         return loadData;
     }
 }

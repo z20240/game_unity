@@ -8,7 +8,27 @@ using UnityEngine.UI;
 using System;
 using LitJson; // 外部載入的套件，如果可以用的話，以後要留著
 
-public class Login : MonoBehaviour {
+public class LoginManager : MonoBehaviour {
+    UICanvasMain uICanvasMain;
+
+    /// <summary>
+    /// Start is called on the frame when a script is enabled just before
+    /// any of the Update methods is called the first time.
+    /// </summary>
+    void Start()
+    {
+        // 拿到場景中的 gameObject, 從 hirochy 的 root 開始抓取
+        GameObject go = GameObject.Find("canvas_main");
+        if ( go == null )
+            return;
+        uICanvasMain = go.GetComponent<UICanvasMain>();
+
+        // delegate 將 onclick 的方式委派過來 ( 用 += )
+        uICanvasMain.gameStart += StartGame;
+        uICanvasMain.login += FacebookLogin;
+        uICanvasMain.guest += QuickStartCreate;
+
+    }
 
     // [快速登入]
     public void QuickStartCreate() {
@@ -56,10 +76,13 @@ public class Login : MonoBehaviour {
         // 如果沒資料的話，顯示登入畫面
         if (User.getInstance().GetLocalUserData() == null) {
             // show login choose panel
+            // 讓藍色那塊滑進來
+            uICanvasMain.pnlLoginAni.SetBool("panelEnter", true);
+            Debug.Log("show login choose panel");
             yield break;
         }
 
-        string url = Util.getInstance().LobbyAddr + "/users/user?user_id=" + User.getInstance().User_id + "&fb_userid=" + User.getInstance().Fb_userid;
+        string url = Util.getInstance().LobbyAddr + "/users/user?user_id=" + User.getInstance().user_id + "&fb_userid=" + User.getInstance().fb_userid;
 
         using (UnityWebRequest www = UnityWebRequest.Get(url)) {
             yield return www.Send();
